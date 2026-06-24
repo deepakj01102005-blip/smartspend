@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartSpend</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">₹ SmartSpend</div>
+
+  <nav>
+    <a class="nav-link active" data-page="dashboard">Dashboard</a>
+    <a class="nav-link" data-page="transactions">Transactions</a>
+    <a class="nav-link" data-page="budgets">Budgets</a>
+    <a class="nav-link" data-page="insights">AI Insights</a>
+  </nav>
+</aside>
+
+<!-- MAIN AREA -->
+<main class="main">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <h1 id="page-title">Dashboard</h1>
+    <button class="btn-primary" id="btn-add">+ Add Transaction</button>
+  </div>
+
+  <!-- ── DASHBOARD PAGE ──────────────────────────────────────────────────── -->
+  <div class="page active" id="page-dashboard">
+
+    <!-- Summary cards -->
+    <div class="cards">
+      <div class="card green">
+        <div class="card-label">Income</div>
+        <div class="card-value" id="val-income">—</div>
+      </div>
+      <div class="card red">
+        <div class="card-label">Expenses</div>
+        <div class="card-value" id="val-expenses">—</div>
+      </div>
+      <div class="card yellow">
+        <div class="card-label">Savings</div>
+        <div class="card-value" id="val-savings">—</div>
+      </div>
+      <div class="card blue">
+        <div class="card-label">Transactions</div>
+        <div class="card-value" id="val-txns">—</div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-row">
+      <div class="chart-box wide">
+        <p class="chart-label">Income vs Expenses — Last 6 Months</p>
+        <canvas id="chart-trend"></canvas>
+      </div>
+      <div class="chart-box">
+        <p class="chart-label">Spending by Category</p>
+        <canvas id="chart-donut"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── TRANSACTIONS PAGE ───────────────────────────────────────────────── -->
+  <div class="page" id="page-transactions">
+    <div class="page-header">
+      <select id="filter-category" class="select-input">
+        <option value="">All Categories</option>
+        <option>Food & Dining</option>
+        <option>Transport</option>
+        <option>Shopping</option>
+        <option>Entertainment</option>
+        <option>Healthcare</option>
+        <option>Utilities</option>
+        <option>Rent</option>
+        <option>Salary</option>
+        <option>Freelance</option>
+      </select>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Category</th>
+          <th>Type</th>
+          <th>Amount</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="txn-list"></tbody>
+    </table>
+  </div>
+
+  <!-- ── BUDGETS PAGE ────────────────────────────────────────────────────── -->
+  <div class="page" id="page-budgets">
+    <div class="page-header">
+      <button class="btn-secondary" id="btn-set-budget">Set Budget</button>
+    </div>
+    <div class="budget-grid" id="budget-grid"></div>
+  </div>
+
+  <!-- ── INSIGHTS PAGE ──────────────────────────────────────────────────── -->
+  <div class="page" id="page-insights">
+    <div class="insights-list" id="insights-list"></div>
+  </div>
+
+</main>
+
+<!-- ADD TRANSACTION MODAL -->
+<div class="modal-bg" id="modal-add">
+  <div class="modal">
+    <div class="modal-top">
+      <h3>Add Transaction</h3>
+      <button class="close-btn" id="close-add">✕</button>
+    </div>
+
+    <div class="form-group">
+      <label>Type</label>
+      <select id="input-type" class="select-input">
+        <option value="expense">Expense</option>
+        <option value="income">Income</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Category</label>
+      <select id="input-category" class="select-input">
+        <option>Food & Dining</option>
+        <option>Transport</option>
+        <option>Shopping</option>
+        <option>Entertainment</option>
+        <option>Healthcare</option>
+        <option>Utilities</option>
+        <option>Rent</option>
+        <option>Salary</option>
+        <option>Freelance</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Amount (₹)</label>
+      <input type="number" id="input-amount" class="text-input" placeholder="500">
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <input type="text" id="input-desc" class="text-input" placeholder="Zomato order">
+    </div>
+
+    <div class="form-group">
+      <label>Date</label>
+      <input type="date" id="input-date" class="text-input">
+    </div>
+
+    <button class="btn-primary full" id="submit-add">Add Transaction</button>
+  </div>
+</div>
+
+<!-- SET BUDGET MODAL -->
+<div class="modal-bg" id="modal-budget">
+  <div class="modal">
+    <div class="modal-top">
+      <h3>Set Budget</h3>
+      <button class="close-btn" id="close-budget">✕</button>
+    </div>
+
+    <div class="form-group">
+      <label>Category</label>
+      <select id="budget-cat" class="select-input">
+        <option>Food & Dining</option>
+        <option>Transport</option>
+        <option>Shopping</option>
+        <option>Entertainment</option>
+        <option>Healthcare</option>
+        <option>Utilities</option>
+        <option>Rent</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Monthly Limit (₹)</label>
+      <input type="number" id="budget-limit" class="text-input" placeholder="5000">
+    </div>
+
+    <button class="btn-primary full" id="submit-budget">Save Budget</button>
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
